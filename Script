@@ -1,0 +1,265 @@
+local tool = Instance.new("Tool")
+tool.Name = "Murder Sphere"
+tool.RequiresHandle = false
+local cooldown = 10
+
+local isCooldown = false
+tool.Activated:Connect(function()
+if isCooldown then return end
+    isCooldown = true
+local player = game.Players.LocalPlayer
+local auras = {}
+
+local function createAura(radius, speed, color)
+    local aura = Instance.new("Part")
+    aura.Name = "Aura"
+    aura.Size = Vector3.new(2, 2, 2)
+    aura.Shape = Enum.PartType.Ball
+    aura.Color = color
+    aura.Transparency = 0
+    aura.Material = Enum.Material.Neon
+    aura.CanCollide = true
+    aura.Parent = player.Character.HumanoidRootPart
+
+    local function rotateAura()
+        local angle = tick() * speed
+        aura.Position = player.Character.HumanoidRootPart.Position + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * -radius)
+    end
+ game:GetService("RunService").Heartbeat:Connect(rotateAura)
+
+    local function onTouch(hit)
+        if hit.Parent and hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= player.Character then
+            local humanoid = hit.Parent:FindFirstChild("Humanoid")
+            humanoid:TakeDamage(1)
+        end
+    end
+
+    aura.Touched:Connect(onTouch)
+
+    table.insert(auras, aura)
+    return aura
+end
+
+local radius = 5
+local speed = 3
+local color = Color3.fromRGB(94, 0, 139)
+
+local aura1 = createAura(radius, speed, color)
+local aura2 = createAura(radius, speed, color)
+aura2.Position = player.Character.HumanoidRootPart.Position + Vector3.new(0, 0, -radius * 2)
+
+task.wait(10)
+
+for _, aura in ipairs(auras) do
+    for i = 1, 10 do
+        wait(0.1)
+        aura.Transparency = i / 10
+    end
+    aura:Destroy()
+end
+wait(cooldown)
+    isCooldown = false
+end)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+player = game.Players.LocalPlayer
+local tool = Instance.new("Tool")
+tool.Name = "Controlled Curse"
+tool.RequiresHandle = false
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local function createAndMoveAura()
+    aura = Instance.new("Part")
+    aura.Name = "Aura"
+    aura.Size = Vector3.new(4, 4, 4)
+    aura.Shape = Enum.PartType.Ball
+    aura.Color = Color3.fromRGB(94, 0, 139)
+    aura.Transparency = 0
+    aura.Material = Enum.Material.Neon
+    aura.CanCollide = false
+
+    local function moveAura()
+        aura.CFrame = CFrame.new(game.Players.LocalPlayer:GetMouse().Hit.Position)
+    end
+
+local function onTouch(hit)
+        if hit.Parent and hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= player.Character then
+            local humanoid = hit.Parent:FindFirstChild("Humanoid")
+            humanoid:TakeDamage(1)
+        end
+    end
+
+    aura.Touched:Connect(onTouch)
+
+    local connection
+    connection = game:GetService("RunService").Heartbeat:Connect(function()
+        if aura and aura.Parent == game.Workspace then
+            moveAura()
+        else
+            connection:Disconnect()
+        end
+    end)
+
+    aura.Parent = game.Workspace
+
+    wait(10)
+    aura:Destroy()
+end
+
+local cooldown = 10
+
+local isCooldown = false
+tool.Activated:Connect(function()
+if isCooldown then return end
+    isCooldown = true
+    createAndMoveAura()
+    wait(cooldown)
+    isCooldown = false
+end)
+
+local tool = Instance.new("Tool")
+tool.Name = "Regeneration"
+tool.RequiresHandle = false
+tool.Parent = game.Players.LocalPlayer.Backpack
+local cooldown = 25
+
+local isCooldown = false
+tool.Activated:Connect(function()
+if isCooldown then return end
+    isCooldown = true
+    local player = game.Players.LocalPlayer
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+
+    if humanoid then
+        if humanoid.Health < humanoid.MaxHealth then
+            local regenAmount = humanoid.MaxHealth / 3
+            humanoid.Health = math.min(humanoid.Health + regenAmount, humanoid.MaxHealth)
+        end
+    end
+Spooky = Instance.new("Sound", game.Workspace)
+Spooky.Name = "Spooky"
+Spooky.SoundId = "rbxassetid://5020159109"
+Spooky.Volume = 1.5
+Spooky.PlaybackSpeed = 0.8
+Spooky.Looped = false
+Spooky:Play()
+wait(cooldown)
+    isCooldown = false
+end)
+
+local tool = Instance.new("Tool")
+tool.Name = "Killer Shroud"
+tool.RequiresHandle = false
+local cooldown = 10
+
+local isCooldown = false
+tool.Activated:Connect(function()
+if isCooldown then return end
+    isCooldown = true
+local player = game.Players.LocalPlayer
+
+local auraShape = Instance.new("Part")
+auraShape.Name = "ProtectiveShield"
+auraShape.Size = Vector3.new(16, 16, 16)
+auraShape.Shape = Enum.PartType.Ball
+auraShape.Color = Color3.fromRGB(100, 0, 160)
+auraShape.Transparency = 0.5
+auraShape.CanCollide = false
+auraShape.Anchored = true
+auraShape.Parent = workspace
+
+local function updateAuraPosition()
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        auraShape.Position = player.Character.HumanoidRootPart.Position
+    end
+end
+
+game:GetService("RunService").Heartbeat:Connect(updateAuraPosition)
+
+local function onHit(hit)
+    local humanoid = hit.Parent:FindFirstChild("Humanoid")
+    if humanoid and humanoid.Parent.Name ~= player.Name then
+        humanoid:TakeDamage(2)
+    end
+end
+
+auraShape.Touched:Connect(onHit)
+Spooky = Instance.new("Sound", game.Workspace)
+Spooky.Name = "Shield"
+Spooky.SoundId = "rbxassetid://5649201275"
+Spooky.Volume = 1
+Spooky.PlaybackSpeed = 1
+Spooky.Looped = false
+Spooky:Play()
+
+task.wait(6)
+auraShape:Destroy()
+wait(cooldown)
+    isCooldown = false
+end)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Mental Impact"
+tool.RequiresHandle = false
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+tool.Activated:Connect(function()
+    aura = Instance.new("Part")
+    aura.Name = "FreezeAura"
+    aura.Size = Vector3.new(100, 100, 100)
+    aura.Shape = Enum.PartType.Ball
+    aura.Color = Color3.fromRGB(100, 0, 150)
+    aura.Transparency = 0
+    aura.Material = Enum.Material.Neon
+    aura.CanCollide = false
+    aura.Anchored = true
+    aura.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    aura.Parent = game.Workspace
+    
+    Spooky = Instance.new("Sound", game.Workspace)
+Spooky.Name = "Spooky"
+Spooky.SoundId = "rbxassetid://9126213741"
+Spooky.Volume = 1
+Spooky.PlaybackSpeed = 1
+Spooky.Looped = false
+Spooky:Play()
+
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = game:GetService("TweenService"):Create(aura, tweenInfo, {Transparency = 0.5})
+    tween:Play()
+
+    local frozenHumanoids = {}
+
+    aura.Touched:Connect(function(hit)
+        local humanoid = hit.Parent:FindFirstChild("Humanoid")
+        if humanoid and humanoid.Parent.Name ~= game.Players.LocalPlayer.Name then
+        freezeAnimation = Instance.new("Animation")
+                freezeAnimation.AnimationId = "rbxassetid://119783214"
+                animationTrack = humanoid:LoadAnimation(freezeAnimation)
+                animationTrack:Play()
+            humanoid.RootPart.Anchored = true
+            table.insert(frozenHumanoids, humanoid)
+        end
+    end)
+
+    wait(3)
+
+    local tweenInfoFade = TweenInfo.new(3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenFade = game:GetService("TweenService"):Create(aura, tweenInfoFade, {Transparency = 1})
+    tweenFade:Play()
+
+    wait(4)
+
+    for _, humanoid in pairs(frozenHumanoids) do
+        humanoid.RootPart.Anchored = false
+    ActiveTracks = humanoid:GetPlayingAnimationTracks()
+for _,v in pairs(ActiveTracks) do
+     v:Stop()
+end
+    end
+
+    aura:Destroy()
+end)
